@@ -2,6 +2,7 @@ version: '3'
 
 services:
   nodejs:
+    build: ./server
     image: dariushine/elona_server
     depends_on: 
       - postgres
