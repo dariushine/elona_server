@@ -1,17 +1,10 @@
 const express = require('express')
+const morgan = require('morgan')
 const { Pool } = require('pg')
 const app = express()
 const port = 80
 
 const pool = new Pool();
-
-/*
-pool.query('select * from chat').then(
-  function (result) {
-    console.log(result.rows);
-  }
-)
-*/
 
 const chat_types = {
 
@@ -28,6 +21,8 @@ const chat_types = {
   }
 };
 
+app.use(morgan('dev'));
+
 app.get('/', (req, res) => res.send('Hello Worldes!'))
 
 app.get('/text.txt', function (req, res) {
@@ -36,7 +31,7 @@ app.get('/text.txt', function (req, res) {
   res.send(response)
 })
 
-app.get('/logen', function (req, res) {
+app.get('/logen.txt', function (req, res) {
   pool.query("select * from chat where lang='en' order by id desc limit 30").then((result) => {
     let response = "";
     let first = result.rowCount > 0 ? result.rows[0]['id'] : 1;
@@ -58,7 +53,7 @@ app.get('/logen', function (req, res) {
 
       let dateText = `${dateObj.month}/${dateObj.day}(${dateObj.hour}:${dateObj.minutes})`;
 
-      text += row['id'] + '%' + dateText + '%' + chat_types.num[row['kind']] + '%' +
+      text += row['id'] + '%' + dateText + '%' + chat_types.num[row['kind']] +
         row['text'] + '%' + row['addr'] + '%\n';
       return text;
     }, "")
@@ -96,9 +91,6 @@ app.get('/cgi-bin/wtalken/wtalk2.cgi', function (req, res) {
 
   pool.query(query).catch(e => console.log(e.stack));
   res.redirect('/logen')
-})
-
-app.get('/post', function (req, res) {
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`)) 
