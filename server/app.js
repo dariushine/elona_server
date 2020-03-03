@@ -1,13 +1,18 @@
-const express = require('express')
-const morgan = require('morgan')
-const { Pool } = require('pg')
-const app = express()
-const port = 80
+const express = require('express');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
+const { Pool } = require('pg');
+const app = express();
+const port = 80;
 
 const pool = new Pool();
 
-const chat_types = {
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
 
+const chat_types = {
   'num': {
     0: 'chat',
     1: 'dead',
@@ -21,15 +26,16 @@ const chat_types = {
   }
 };
 
-app.use(morgan('dev'));
+app.use([morgan('dev'), limiter]);
+app.disable('x-powered-by');
 
-app.get('/', (req, res) => res.send('Hello Worldes!'))
+app.get('/', (req, res) => res.send('Hello Worldes!'));
 
 app.get('/text.txt', function (req, res) {
   response = "<!--START-->\n%\n素敵な異名コンテスト♪1  [１ヶ月で自動リセット]%\nYour favorite alias♪1  [Auto reset every month]%"
   res.set({ 'Content-type': 'text/plain' });
   res.send(response)
-})
+});
 
 app.get('/logen.txt', function (req, res) {
   pool.query("select * from chat where lang='en' order by id desc limit 30").then((result) => {
@@ -62,7 +68,7 @@ app.get('/logen.txt', function (req, res) {
     res.send(response)
   })
     .catch(e => console.log(e.stack));
-})
+});
 
 app.get('/cgi-bin/wtalken/wtalk2.cgi', function (req, res) {
   let mode = req.query.mode;
@@ -91,6 +97,6 @@ app.get('/cgi-bin/wtalken/wtalk2.cgi', function (req, res) {
 
   pool.query(query).catch(e => console.log(e.stack));
   res.redirect('/logen')
-})
+});
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`)) 
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));

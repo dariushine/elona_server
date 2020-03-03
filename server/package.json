@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "express-rate-limit": "^5.1.1",
     "pg": "^7.18.2"
   },
   "devDependencies": {
