@@ -32,16 +32,16 @@ app.disable('x-powered-by');
 app.get('/', (req, res) => res.send('Hello Worldes!'));
 
 app.get('/text.txt', function (req, res) {
-  response = "<!--START-->\n%\n素敵な異名コンテスト♪1  [１ヶ月で自動リセット]%\nYour favorite alias♪1  [Auto reset every month]%"
+  response = "<!--START-->\n%\n素敵な異名コンテスト♪1  [１ヶ月で自動リセット]%\nYour favorite alias♪1  [Auto reset every month]%";
   res.set({ 'Content-type': 'text/plain' });
-  res.send(response)
+  res.send(response);
 });
 
 app.get('/logen.txt', function (req, res) {
   pool.query("select * from chat where lang='en' order by id desc limit 30").then((result) => {
     let response = "";
     let first = result.rowCount > 0 ? result.rows[0]['id'] : 1;
-    response += first + "<C>\n<!--START-->\n"
+    response += first + "<C>\n<!--START-->\n";
     response += result.rows.reduce(function (text, row) {
       let date = row['time'];
 
@@ -62,10 +62,10 @@ app.get('/logen.txt', function (req, res) {
       text += row['id'] + '%' + dateText + '%' + chat_types.num[row['kind']] +
         row['text'] + '%' + row['addr'] + '%\n';
       return text;
-    }, "")
-    response += "<!--END-->\n<!-- WebTalk v1.6 --><center><small><a href='http://www.kent-web.com/' target='_top'>WebTalk</a></small></center>"
+    }, "");
+    response += "<!--END-->\n<!-- WebTalk v1.6 --><center><small><a href='http://www.kent-web.com/' target='_top'>WebTalk</a></small></center>";
     res.set({ 'Content-type': 'text/plain' });
-    res.send(response)
+    res.send(response);
   })
     .catch(e => console.log(e.stack));
 });
@@ -76,7 +76,7 @@ app.get('/cgi-bin/wtalken/wtalk2.cgi', function (req, res) {
 
   if (comment == undefined || comment.length < 5) {
     res.status(400).send('400 Bad request');
-    return
+    return;
   }
 
   let chat_name = comment.substr(0, 4);
@@ -88,7 +88,7 @@ app.get('/cgi-bin/wtalken/wtalk2.cgi', function (req, res) {
   let chat_type = chat_types.name[chat_name];
   let text = comment.substr(4);
   let addr = req.ip;
-  let curr_time = new Date() //insert current time here
+  let curr_time = new Date(); //insert current time here
   let query = {
     name: 'fetch-log-en',
     text: 'INSERT INTO CHAT (time, kind, text, addr, lang) VALUES ($1, $2, $3, $4, $5)',
@@ -96,7 +96,7 @@ app.get('/cgi-bin/wtalken/wtalk2.cgi', function (req, res) {
   };
 
   pool.query(query).catch(e => console.log(e.stack));
-  res.redirect('/logen')
+  res.redirect('/logen');
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
