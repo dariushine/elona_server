@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  nodejs:
+    image: dariushine/elona_server
+    depends_on: 
+      - postgres
+    environment:
+      - PGHOST=postgres
+      - PGUSER=youruser
+      - PGPASSWORD=yourpwd
+    ports:
+      - 80:80
+
+  postgres:
+    image: postgres:alpine
+    container_name: db
+    restart: unless-stopped
+    volumes:  
+      - dbdata:/data/db   
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      - POSTGRES_USER=youruser
+      - POSTGRES_PASSWORD=yourpwd
+
+volumes:
+  dbdata:

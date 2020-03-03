@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  nodejs:
+    build: ./server
+    volumes:
+    - ./server:/src/app
+    command: ["nodemon", "-L", /src/app/app.js"]
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
