@@ -31,9 +31,9 @@ const chat_types = {
 app.use([morgan('dev'), limiter]);
 app.disable('x-powered-by');
 
-app.get('/', (req, res) => res.send('Welcome to this Elona Chat server. Nothing in this page yet.'));
+app.get('/', (req, res) => res.send('Welcome to this Elona Chat server. Instructions will be available at the Elona wiki.'));
 
-// not sure what it does. is it like a motd? is it the voting board message?
+// not sure what it does. is it like a motd? is it the message for the voting board?
 app.get('/text.txt', function (req, res) {
   response = "<!--START-->\n%\n素敵な異名コンテスト♪1  [１ヶ月で自動リセット]%\nYour favorite alias♪1  [Auto reset every month]%";
   res.set({ 'Content-type': 'text/plain' });
@@ -51,7 +51,7 @@ app.get('/log(en)?.txt', function (req, res) {
     values: [language]
   }
 
-  // send query
+  // send query and process everything
   pool.query(query).then((result) => {
     let response = "";
     let first = result.rowCount > 0 ? result.rows[0]['id'] : 1;
